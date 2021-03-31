@@ -3,6 +3,7 @@
 }
 @model Grand.Plugin.Payments.Khanoumi.Models.ConfigurationModel
 @using Grand.Plugin.Payments.Khanoumi.Models;
+@using Grand.Framework
 
 <form asp-controller="PaymentKhanoumi" asp-action="Configure" method="post">
 
@@ -53,6 +54,36 @@
                     <span asp-validation-for="AdditionalFeePercentage"></span>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="RialToToman" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input  asp-for="RialToToman" type="checkbox"/>
+                    <span asp-validation-for="RialToToman"></span>
+                </div>
+            </div>           
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="UseKhanoumiGate" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input  asp-for="UseKhanoumiGate" type="checkbox"/>
+                    <span asp-validation-for="UseKhanoumiGate"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="KhanoumiGateType" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input asp-for="KhanoumiGateType"/>
+                    <span asp-validation-for="KhanoumiGateType"></span>
+                </div>
+            </div>
+
+            
+
             <div class="form-actions">
                 <div class="row">
                     <div class="offset-md-3 offset-sm-3 col-md-9 col-sm-9">

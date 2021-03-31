@@ -10,6 +10,7 @@ namespace Grand.Plugin.Payments.Khanoumi
         public void Register(IServiceCollection serviceCollection, ITypeFinder typeFinder, GrandConfig config)
         {
             serviceCollection.AddScoped<KhanoumiPaymentProcessor>();
+            serviceCollection.AddScoped<KhanoumiPaymentSetting>();
         }
 
         public int Order => 1;
