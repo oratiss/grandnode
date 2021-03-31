@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "_ConfigurePlugin";
+}
+@model Grand.Plugin.Payments.Khanoumi.Models.ConfigurationModel
+@using Grand.Plugin.Payments.Khanoumi.Models;
+
+<form asp-controller="PaymentKhanoumi" asp-action="Configure" method="post">
+
+    <div class="form-horizontal">
+        <div class="form-body">
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="GrpcAddress" class="control-label" />
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input asp-for="GrpcAddress" />
+                    <span asp-validation-for="GrpcAddress"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="GrpcKey" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input asp-for="GrpcKey"/>
+                    <span asp-validation-for="GrpcKey"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="GrpcPassword" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input asp-for="GrpcPassword"/>
+                    <span asp-validation-for="GrpcPassword"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="AdditionalFee" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input asp-for="AdditionalFee"/>
+                    <span asp-validation-for="AdditionalFee"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3 col-sm-3 text-right">
+                    <admin-label asp-for="AdditionalFeePercentage" class="control-label"/>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <admin-input asp-for="AdditionalFeePercentage"/>
+                    <span asp-validation-for="AdditionalFeePercentage"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="row">
+                    <div class="offset-md-3 offset-sm-3 col-md-9 col-sm-9">
+                        <input type="submit" name="save" class="btn green" value="@T("Admin.Common.Save")"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
