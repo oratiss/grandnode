@@ -11,7 +11,7 @@ namespace Grand.Plugin.Payments.Khanoumi
         public decimal AdditionalFee { get; set; } = 0;
         public float AdditionalFeePercentage { get; set; } = 0;
         public bool RialToToman { get; set; }
-        public bool UseKhanoumiGate { get; set; }
+        public bool GateWayChosenByKhanoumiService { get; set; }
         public Enumeration.KhanoumiGateType KhanoumiGateType { get; set; }
 
 

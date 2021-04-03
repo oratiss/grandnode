@@ -12,8 +12,9 @@ namespace Grand.Plugin.Payments.Khanoumi.Enumerations
             Sadaad = 2,
             Saman = 3,
             Tejarat = 4,
-            HaftsadoBistoChahar = 5
-
+            HaftsadoBistoChahar = 5,
+            ZarinPal = 6
+            
         }
     }
 }

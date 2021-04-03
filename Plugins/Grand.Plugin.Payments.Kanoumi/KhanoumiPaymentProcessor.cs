@@ -67,7 +67,8 @@ namespace Grand.Plugin.Payments.Khanoumi
             var order = postProcessPaymentRequest.Order;
 
             var total = Convert.ToInt64(Math.Round(order.OrderTotal, 2));
-            if (_khanoumiPaymentSetting.RialToToman) total = total / 10;
+            var isRialtoToman = _khanoumiPaymentSetting.RialToToman;
+            if (isRialtoToman) total = total / 10;
 
             var userPhone = string.Empty;
             var billingAddress = await _addressService.GetAddressByIdSettings(order.BillingAddress.Id);
@@ -80,24 +81,25 @@ namespace Grand.Plugin.Payments.Khanoumi
             if (string.IsNullOrEmpty(userPhone))
                 userPhone = string.IsNullOrEmpty(shippingAddress?.PhoneNumber) ? userPhone : $"{userPhone} - {shippingAddress.PhoneNumber}";
 
+            // we have to add a  standard phone number provider and use it.
+
             var firstName = await _genericAttributeService.GetAttributesForEntity<string>(customer, SystemCustomerAttributeNames.FirstName, order.StoreId);
             var lastName = await _genericAttributeService.GetAttributesForEntity<string>(customer, SystemCustomerAttributeNames.LastName, order.StoreId);
 
             var fullName = $"{firstName ?? string.Empty} {lastName ?? string.Empty}".Trim();
             var urlToRedirect = string.Empty;
-            var khanoumiGate = _khanoumiPaymentSetting.UseKhanoumiGate ? _khanoumiPaymentSetting.KhanoumiGateType.ToString() : null;
-            var description = 
+            var khanoumiGate = _khanoumiPaymentSetting.GateWayChosenByKhanoumiService ? _khanoumiPaymentSetting.KhanoumiGateType.ToString() : null;
+            var description =
                 $"{(await _storeService.GetStoreById(order.StoreId)).Name}{(string.IsNullOrEmpty(fullName) ? string.Empty : $" - {firstName}")} - {customer.Email}{(string.IsNullOrEmpty(userPhone) ? string.Empty : $" - {userPhone}")}";
             var callBackUrl = string.Concat(_webHelper.GetStoreLocation(), "Plugins/Payment.Khanoumi/ResultHandler", "?OGUId=" + postProcessPaymentRequest.Order.OrderGuid);
             var storeAddress = _webHelper.GetStoreLocation();
             var serverAddress = _khanoumiPaymentSetting.GrpcAddress;
             var grpcKey = _khanoumiPaymentSetting.GrpcKey;
             var grpcPassword = _khanoumiPaymentSetting.GrpcPassword;
+            var orderNumber = order.OrderGuid.ToString();
+
 
             //now we do the GRPC Call
-
-
-
 
 
         }
@@ -114,32 +116,50 @@ namespace Grand.Plugin.Payments.Khanoumi
 
         public Task<CapturePaymentResult> Capture(CapturePaymentRequest capturePaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new CapturePaymentResult();
+            result.AddError("Capture method not supported");
+            return Task.FromResult(result);
         }
 
         public Task<RefundPaymentResult> Refund(RefundPaymentRequest refundPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new RefundPaymentResult();
+            result.AddError("Refund method not supported");
+            return Task.FromResult(result);
         }
 
         public Task<VoidPaymentResult> Void(VoidPaymentRequest voidPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new VoidPaymentResult();
+            result.AddError("Void method not supported");
+            return Task.FromResult(result);
         }
 
         public Task<ProcessPaymentResult> ProcessRecurringPayment(ProcessPaymentRequest processPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new ProcessPaymentResult();
+            result.AddError("Recurring payment not supported");
+            return Task.FromResult(result);
         }
 
         public Task<CancelRecurringPaymentResult> CancelRecurringPayment(CancelRecurringPaymentRequest cancelPaymentRequest)
         {
-            throw new NotImplementedException();
+            var result = new CancelRecurringPaymentResult();
+            result.AddError("Recurring payment not supported");
+            return Task.FromResult(result);
         }
 
         public Task<bool> CanRePostProcessPayment(Order order)
         {
-            throw new NotImplementedException();
+            if (order == null)
+                throw new ArgumentNullException("order");
+
+            //let's ensure that at least 5 seconds passed after order is placed
+            //P.S. there's no any particular reason for that. we just do it
+            if ((DateTime.UtcNow - order.CreatedOnUtc).TotalSeconds < 5)
+                return Task.FromResult(false);
+
+            return Task.FromResult(true);
         }
 
         public Task<IList<string>> ValidatePaymentForm(IFormCollection form)

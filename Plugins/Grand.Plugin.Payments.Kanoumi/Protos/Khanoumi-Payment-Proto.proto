@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option csharp_namespace = "KhanoumiPyamentGrpc";
+
+package KhanoumiPayment;
+
+// The KhanoumiPayment service definition.
+service KhanoumiPayment {
+  // Rcives a payemnt request, processes it and Sends a PaymentResponse
+  rpc Pay (PaymentRequest) returns (PyamentResponse);
+}
+
+// The request message containing the Pyement Request Details like payer name etc.
+message PaymentRequest {
+	string merchandId = 1;
+	string merchantPassword = 2;
+	int64 amount = 3;
+	string callBackUrl = 4;
+	string mobile = 5;
+	string email = 6;
+	string description = 7;
+	int32 KhanoumiGateType = 8;
+	string orderGuid = 9;
+}
+
+// The PaymentResponse containing the Payment Results. for example tracking code.
+message PyamentResponse {
+	int32 status = 1;
+	string authority = 2;
+ }
