@@ -20,8 +20,13 @@
 	</Target>
 
 	<ItemGroup>
+	  <None Remove="Protos\Khanoumi-Payment-Proto.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="Google.Protobuf" Version="3.15.7" />
 	  <PackageReference Include="Grpc.Net.Client" Version="2.36.0" />
+	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.32.0" />
 	  <PackageReference Include="Grpc.Tools" Version="2.36.4">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -42,6 +47,11 @@
 		<ProjectReference Include="..\..\Grand.Services\Grand.Services.csproj">
 			<Private>false</Private>
 		</ProjectReference>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Protobuf Include="Protos\Khanoumi-Payment-Proto.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -13,6 +13,8 @@ namespace Grand.Plugin.Payments.Khanoumi.Models
         public bool RialToToman { get; set; }
         public bool UseKhanoumiGate { get; set; }
         public Enumeration.KhanoumiGateType KhanoumiGateType { get; set; }
+        public bool UseSandBox { get; set; }
+
 
 
     }

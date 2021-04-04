@@ -13,6 +13,7 @@ namespace Grand.Plugin.Payments.Khanoumi
         public bool RialToToman { get; set; }
         public bool GateWayChosenByKhanoumiService { get; set; }
         public Enumeration.KhanoumiGateType KhanoumiGateType { get; set; }
+        public bool UseSandBox { get; set; }
 
 
 

@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Grand.Plugin.Payments.Khanoumi.Enumerations;
+using Grand.Plugin.Payments.Khanoumi.Helpers;
+using Grpc.Net.Client;
+using KhanoumiPyamentGrpc;
 
 namespace Grand.Plugin.Payments.Khanoumi
 {
@@ -23,10 +27,12 @@ namespace Grand.Plugin.Payments.Khanoumi
         private readonly CustomerSettings _customerSettings;
         private readonly IGenericAttributeService _genericAttributeService;
         private readonly IStoreService _storeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public KhanoumiPaymentProcessor(IWebHelper webHelper, ICustomerService customerService,
             KhanoumiPaymentSetting khanoumiPaymentSetting, IAddressService addressService,
-            CustomerSettings customerSettings, IGenericAttributeService genericAttributeService, IStoreService storeService)
+            CustomerSettings customerSettings, IGenericAttributeService genericAttributeService,
+            IStoreService storeService, IHttpContextAccessor httpContextAccessor)
         {
             _webHelper = webHelper;
             _customerService = customerService;
@@ -35,6 +41,7 @@ namespace Grand.Plugin.Payments.Khanoumi
             _customerSettings = customerSettings;
             _genericAttributeService = genericAttributeService;
             _storeService = storeService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         #region Methods
@@ -87,21 +94,71 @@ namespace Grand.Plugin.Payments.Khanoumi
             var lastName = await _genericAttributeService.GetAttributesForEntity<string>(customer, SystemCustomerAttributeNames.LastName, order.StoreId);
 
             var fullName = $"{firstName ?? string.Empty} {lastName ?? string.Empty}".Trim();
-            var urlToRedirect = string.Empty;
-            var khanoumiGate = _khanoumiPaymentSetting.GateWayChosenByKhanoumiService ? _khanoumiPaymentSetting.KhanoumiGateType.ToString() : null;
+            var khanoumiGate = 0;
+            if (_khanoumiPaymentSetting.GateWayChosenByKhanoumiService)
+            {
+                khanoumiGate = _khanoumiPaymentSetting.GateWayChosenByKhanoumiService ? (int)_khanoumiPaymentSetting.KhanoumiGateType : 0;
+            }
+
             var description =
                 $"{(await _storeService.GetStoreById(order.StoreId)).Name}{(string.IsNullOrEmpty(fullName) ? string.Empty : $" - {firstName}")} - {customer.Email}{(string.IsNullOrEmpty(userPhone) ? string.Empty : $" - {userPhone}")}";
             var callBackUrl = string.Concat(_webHelper.GetStoreLocation(), "Plugins/Payment.Khanoumi/ResultHandler", "?OGUId=" + postProcessPaymentRequest.Order.OrderGuid);
-            var storeAddress = _webHelper.GetStoreLocation();
-            var serverAddress = _khanoumiPaymentSetting.GrpcAddress;
+            var grpcAddress = _khanoumiPaymentSetting.GrpcAddress;
             var grpcKey = _khanoumiPaymentSetting.GrpcKey;
             var grpcPassword = _khanoumiPaymentSetting.GrpcPassword;
-            var orderNumber = order.OrderGuid.ToString();
 
 
-            //now we do the GRPC Call
+            //now we do the GRPC Call to get a pre-payment token
+            //and redirect user to another View which then redirects user to bank
+            var channel = GrpcChannel.ForAddress(grpcAddress);
+            var client = new KhanoumiPayment.KhanoumiPaymentClient(channel);
+            var tokenRequest = new TokenRequest {
+                OrderGuid = order.OrderGuid.ToString(),
+                KhanoumiGateType = khanoumiGate,
+                Amount = total,
+                CallBackUrl = callBackUrl,
+                MerchandId = grpcKey,
+                MerchantPassword = grpcPassword,
+                Mobile = userPhone,
+            };
+            
+            //as it is a multi gate if we have a specified gateway (KhanoumiGate),
+            //therefore we are going to provide required field for that gateway before calling grpc.
+            switch (khanoumiGate)
+            {
+                case 6:
+                    tokenRequest.Description = description;
+                    break;
 
 
+
+            }
+
+            var tokenResponse = client.GetToken(tokenRequest);
+
+
+            //after we take response from KhanoumiGateService, based on KhanoumiGate(Gate Type) we do redirect user to
+            //given url of specified bank.
+
+            var uri = new Uri("");
+            switch (khanoumiGate)
+            {
+                case 3://Saman
+                    uri = new Uri(tokenResponse.Bankurl+"/?token="+tokenResponse.Token);
+                    break;
+
+                case 6: //ZarinPal
+                    string urlToRedirect = ZarinPalHelper.ProduceRedirectUrl(_webHelper.GetStoreLocation(),
+                    tokenResponse?.Status,
+                    _khanoumiPaymentSetting.UseSandBox,
+                    tokenResponse.Authority,
+                    khanoumiGate.ToString());
+                    uri = new Uri(urlToRedirect);
+                    break;
+
+            }
+
+            _httpContextAccessor.HttpContext.Response.Redirect(uri.AbsoluteUri);
         }
 
         public Task<bool> HidePaymentMethod(IList<ShoppingCartItem> cart)

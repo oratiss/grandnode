@@ -14,7 +14,7 @@ namespace Grand.Plugin.Payments.Khanoumi.Enumerations
             Tejarat = 4,
             HaftsadoBistoChahar = 5,
             ZarinPal = 6
-            
+
         }
     }
 }
