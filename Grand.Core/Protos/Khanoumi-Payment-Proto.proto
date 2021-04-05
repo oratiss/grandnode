@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option csharp_namespace = "KhanoumiPyamentGrpc";
+
+package KhanoumiPayment;
+
+// The KhanoumiPayment service definition.
+service KhanoumiPayment {
+	// Rcives a Token request, processes it and Sends a TokenResponse
+	rpc GetToken (TokenRequest) returns (TokenResponse);
+
+}
+
+// The request message containing the Pyement Request Details like payer name etc.
+message TokenRequest {
+	string merchandId = 1;
+	string merchantPassword = 2;
+	int64 amount = 3;
+	string callBackUrl = 4;
+	string mobile = 5;
+	int32 KhanoumiGateType = 6;
+	string orderGuid = 7;
+	string description = 8;
+}
+
+// The PaymentResponse containing the Payment Results. for example tracking code.
+message PaymentResponse {
+	int32 status = 1;
+	string message = 2;
+}
+ 
+// The TokenResponse containing the PrePayment Token and URL. 
+message TokenResponse {
+	int32 status = 1;
+	string message = 2;
+	string token = 3;
+	string bankurl = 4;
+	string authority = 5; 
+}
