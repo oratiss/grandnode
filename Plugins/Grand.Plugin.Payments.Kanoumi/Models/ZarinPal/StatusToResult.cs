@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Grand.Plugin.Payments.Khanoumi.Models.ZarinPal
+﻿namespace Grand.Plugin.Payments.Khanoumi.Models.Zarinpal
 {
     public class StatusToResult
     {

@@ -8,32 +8,53 @@ package KhanoumiPayment;
 service KhanoumiPayment {
 	// Rcives a Token request, processes it and Sends a TokenResponse
 	rpc GetToken (TokenRequest) returns (TokenResponse);
+	rpc Pay (PaymentRequest) returns (PaymentResponse);
 
 }
 
-// The request message containing the Pyement Request Details like payer name etc.
+// The request message containing the token Request Details like payer name etc.
 message TokenRequest {
-	string merchandId = 1;
-	string merchantPassword = 2;
+	string grpcMerchandId = 1;
+	string grpcMerchantPassword = 2;
 	int64 amount = 3;
-	string callBackUrl = 4;
-	string mobile = 5;
-	int32 KhanoumiGateType = 6;
-	string orderGuid = 7;
-	string description = 8;
+	string orderGuid = 4;
+	string callBackUrl = 5;
+	int32 khanoumiGateType = 6;
+	bool useSandBox = 7;
+	string fullName = 8;
+	string mobile = 9;
+	string email = 10;
+	string description = 11;
+}
+
+ 
+// The TokenResponse containing the PrePayment Token and URL. 
+message TokenResponse {
+	int32 grpcStatus = 1;
+	string grpcMessage = 2;
+	int32 status = 3;
+	int32 errorCode = 4;
+	string message = 5;
+	string token = 6;
+	string bankUrl = 7;
+	string authority = 8; 
+}
+
+// The request message containing the token Request Details like payer name etc.
+message PaymentRequest {
+	string grpcMerchandId = 1;
+	string grpcMerchantPassword = 2;
+	string authority = 3;
+	int64 amount = 4;
+	int32 khanoumiGateType = 5;
+	bool useSandBox = 6;
 }
 
 // The PaymentResponse containing the Payment Results. for example tracking code.
 message PaymentResponse {
-	int32 status = 1;
-	string message = 2;
-}
- 
-// The TokenResponse containing the PrePayment Token and URL. 
-message TokenResponse {
-	int32 status = 1;
-	string message = 2;
-	string token = 3;
-	string bankurl = 4;
-	string authority = 5; 
+	int32 grpcStatus = 1;
+	string grpcMessage = 2;
+	int32 khanoumiGateType = 3;
+	int32 status = 4;
+	string refId = 5;
 }

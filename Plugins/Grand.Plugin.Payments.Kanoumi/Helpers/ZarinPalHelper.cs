@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Grand.Plugin.Payments.Khanoumi.Models.ZarinPal;
+using Grand.Plugin.Payments.Khanoumi.Models.Zarinpal;
 
 namespace Grand.Plugin.Payments.Khanoumi.Helpers
 {
-    public class ZarinPalHelper
+    public class ZarinpalHelper
     {
         public static string ProduceRedirectUrl(string StoreLocation, int? status, bool UseSandbox, string Authority, string ZarinGate)
         {
-            string urlProduced = (status.HasValue && status.Value == 100 ?
-                    string.Concat($"https://{(UseSandbox ? "sandbox" : "www")}.zarinpal.com/pg/StartPay/",
-                        Authority, ZarinGate)
-                    : string.Concat(StoreLocation, "Plugins/PaymentZarinpal/ErrorHandler", "?Error=",
-                        ZarinPalHelper.StatusToMessage(status).Message)
-                );
+            string urlProduced = (status.HasValue && status.Value == 100 
+                    ? string.Concat($"https://{(UseSandbox ? "sandbox" : "www")}.zarinpal.com/pg/StartPay/", Authority, ZarinGate)
+                    : string.Concat(StoreLocation, "Plugins/PaymentZarinpal/ErrorHandler", "?Error=", StatusToMessage(status).Message));
+            
             var uri = new Uri(urlProduced);
             return uri.AbsoluteUri;
         }

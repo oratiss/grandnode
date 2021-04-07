@@ -19,9 +19,41 @@
 		<RemoveDir Directories="..\..\Grand.Web\Plugins\Payments.Khanoumi\refs" />
 	</Target>
 
+
 	<ItemGroup>
-	  <None Remove="Protos\Khanoumi-Payment-Proto.proto" />
+	  <PackageReference Include="Google.Protobuf" Version="3.15.7" />
+	  <PackageReference Include="Grpc.Net.Client" Version="2.36.0" />
+	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.36.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.36.4">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	</ItemGroup>
+
+	<Target Name="CopyFile" AfterTargets="AfterBuild">
+		<ItemGroup>
+			<CopyFiles Include="$(NuGetPackageRoot)\google.protobuf\3.15.7\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\system.memory\4.5.4\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\system.runtime.compilerservices.unsafe\4.7.1\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\grpc.net.client\2.36.0\lib\netstandard2.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\grpc.net.common\2.36.0\lib\netstandard2.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\grpc.core.api\2.36.1\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.logging.abstractions\5.0.0\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\system.diagnostics.diagnosticsource\4.6.0\lib\netstandard1.3\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\grpc.net.clientfactory\2.36.0\lib\netstandard2.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.http\3.0.3\lib\netcoreapp3.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.dependencyinjection.abstractions\5.0.0\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.logging\3.1.2\lib\netcoreapp3.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.configuration.binder\3.1.2\lib\netcoreapp3.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.configuration\3.1.2\lib\netcoreapp3.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.primitives\5.0.0\lib\netcoreapp3.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.dependencyinjection\3.1.10\lib\netcoreapp3.1\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\microsoft.extensions.options\5.0.0\lib\netstandard2.0\*.*" />
+			<CopyFiles Include="$(NuGetPackageRoot)\grpc.tools\2.36.4\build\_protobuf\netstandard1.3\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(CopyFiles)" DestinationFolder="..\..\Grand.Web\Plugins\Payments.Khanoumi\" />
+	</Target>
+
 
 
 	<ItemGroup>
@@ -44,18 +76,18 @@
 		<None Update="logo.jpg">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<None Update="Protos\Khanoumi-Payment-Proto.proto">
+		  <GrpcServices>Client</GrpcServices>
+		</None>
 		<None Update="Views\PaymentKhanoumi\Configure.cshtml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<!--<None Update="Views\PaymentPaymentBrainTreeScripts.cshtml">
+		</None>		
+		<None Update="Views\PaymentKhanoumi\ErrorHandler.cshtml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Views\PaymentInfo.cshtml">
+		<None Update="Views\PaymentKhanoumi\PaymentInfo.cshtml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="Views\PaymentInfo_3DS.cshtml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>-->
 		<None Update="Views\_ViewImports.cshtml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
